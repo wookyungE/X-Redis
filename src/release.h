@@ -1,0 +1,3 @@
+#define REDIS_GIT_SHA1 "132c76be"
+#define REDIS_GIT_DIRTY "0"
+#define REDIS_BUILD_ID "user-SYS-1029U-TRT-1748526197"

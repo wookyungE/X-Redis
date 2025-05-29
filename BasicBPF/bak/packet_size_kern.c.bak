@@ -1,0 +1,250 @@
+#include <linux/bpf.h>
+//#include <linux/in.h>
+#include <bpf/bpf_helpers.h>
+#include <bpf/bpf_core_read.h>
+#include <bpf/bpf_endian.h>
+#include <linux/if_ether.h>
+#include <linux/ip.h>
+#include <linux/tcp.h>
+#include <string.h>
+#include <linux/in.h>
+struct packet_info {
+    __u64 offset;
+    char size[10]; // Change this to a character array
+};
+#if 0
+struct {
+    __uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+    __type(key, __u32); // Key is not used in per-CPU array map
+    __type(value, __u64); // Use a 64-bit value to store packet_id
+    __uint(max_entries, 1); // Only one entry is needed as the key is not used
+} packet_id_map SEC(".maps");
+
+#endif
+struct {
+    __uint(type, BPF_MAP_TYPE_HASH);
+    __type(key, __u64); // Use a 64-bit key to accommodate larger number of packets
+    __type(value, struct packet_info); // Use a struct as the value type
+    __uint(max_entries, 1); // Increase the map size
+} packet_size_map SEC(".maps");
+
+
+static inline int bpf_memcmp(const void *s1, const void *s2, unsigned int n) {
+    const unsigned char *p1 = s1;
+    const unsigned char *p2 = s2;
+
+    for (unsigned int i = 0; i < n; i++) {
+        if (p1[i] != p2[i]) {
+            return (p1[i] < p2[i]) ? -1 : 1;
+        }
+    }
+
+    return 0;
+}
+
+SEC("prog")
+int drop_all(struct __sk_buff *skb) {
+//    __u32 size = 0; // Since max_entries is 1, we'll just use 0 as the key
+//    __u32 value_offset = 1; // Since max_entries is 1, we'll just use 0 as the key
+//   __u64 packet_size = skb->len;
+    char delimiter[2];
+    char redis_cmd[3];
+    struct tcphdr tcp_header;
+    __u64 offset = 1;
+
+    static __u64 packet_id = 0;
+    struct packet_info pinfo = {};
+    
+#if 0
+
+    struct iphdr ip_header;
+
+    if (bpf_skb_load_bytes(skb, ETH_HLEN, &ip_header, sizeof(ip_header)) != 0){
+        return -1;
+    }
+        __u32 src_ip = bpf_ntohl(ip_header.saddr);
+    __u32 dst_ip = bpf_ntohl(ip_header.daddr);
+
+bpf_printk("Source IP: %u.\n", src_ip >> 24 & 0xFF);
+bpf_printk("%u.\n", src_ip >> 16 & 0xFF);
+bpf_printk("%u.\n", src_ip >> 8 & 0xFF);
+bpf_printk("%u\n", src_ip & 0xFF);    
+
+bpf_printk("Dest IP: %u.\n", dst_ip >> 24 & 0xFF);
+bpf_printk("%u.\n", dst_ip >> 16 & 0xFF);
+bpf_printk("%u.\n", dst_ip >> 8 & 0xFF);
+bpf_printk("%u\n", dst_ip & 0xFF);
+
+#endif
+
+
+#if 1
+struct ethhdr eth_header;
+struct iphdr ip_header;
+
+#if 0
+// Ethernet 헤더 로드
+if (bpf_skb_load_bytes(skb, 0, &eth_header, sizeof(eth_header)) != 0)
+{
+    bpf_printk("111111111\n");
+    return -1;
+}
+// 패킷이 IP 패킷인지 확인
+if (eth_header.h_proto != bpf_htons(ETH_P_IP))
+{
+    bpf_printk("222222222\n");
+    return -1;
+}
+// IP 헤더 로드
+if (bpf_skb_load_bytes(skb, ETH_HLEN, &ip_header, sizeof(ip_header)) != 0)
+{
+    bpf_printk("333333333\n");
+    return -1;
+}
+
+// 패킷이 TCP 패킷인지 확인
+if (ip_header.protocol != IPPROTO_TCP)
+{
+    bpf_printk("444444444\n");
+    return -1;
+}
+
+#endif
+//__u32 ip_hdr_len = ip_header.ihl * 4;
+bpf_printk("11111111111111\n");
+if (bpf_skb_load_bytes(skb, 0, &eth_header, sizeof(eth_header)) != 0)
+{
+    bpf_printk("3333333333\n");
+    return -1;
+}
+// IP 헤더 로드
+if (bpf_skb_load_bytes(skb, ETH_HLEN, &ip_header, sizeof(ip_header)) != 0)
+{
+    bpf_printk("444444444\n");
+    return -1;
+}
+__u8 ip_hdr_len = ip_header.ihl * 4;
+
+bpf_printk("ipheadr.ihl = %d\n",ip_header.ihl);
+// TCP 헤더 로드
+#if 1
+if(bpf_skb_load_bytes(skb, ETH_HLEN + ip_hdr_len, &tcp_header, sizeof(tcp_header)) != 0)
+
+    bpf_printk("555555555\n");
+    return -1;
+}
+#endif
+__u16 src_port = bpf_ntohs(tcp_header.source);
+__u16 dst_port = bpf_ntohs(tcp_header.dest);
+
+bpf_printk("Source Port: %d\n", src_port);
+bpf_printk("Destination Port: %d\n", dst_port);
+
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //__u64 pid = 0;
+   // __u64 *packet_id = &pid;
+    if (bpf_skb_load_bytes(skb, ETH_HLEN + sizeof(struct iphdr), &tcp_header, sizeof(tcp_header)) != 0){
+        return -1;
+    }
+#if 0
+    //__u16 dst_port = bpf_ntohs(tcp_header.dest);
+    __u16 src_port = bpf_ntohs(tcp_header.source);
+    __u16 dst_port = bpf_ntohs(tcp_header.dest);
+
+
+
+    bpf_printk("Destination Port: %d\n", dst_port);
+    // Print the destination port
+    bpf_printk("Source Port: %d\n", src_port);
+
+#endif
+    __u32 tcp_hdr_len = tcp_header.doff*2;
+    
+    if(bpf_skb_load_bytes(skb, ETH_HLEN+sizeof(struct iphdr)+tcp_hdr_len, &redis_cmd,sizeof(redis_cmd)) !=0 ){
+        return -1;
+    }
+
+    if(bpf_memcmp(redis_cmd,"set",3)!=0 && bpf_memcmp(redis_cmd,"SET",3)!=0){
+        if(bpf_memcmp(redis_cmd,"xxx",3)==0 || bpf_memcmp(redis_cmd,"XXX",3)==0)
+            return -1;
+        //packet_size = 0;
+//        pinfo.size = 0;
+        memset(pinfo.size, 0, sizeof(pinfo.size));
+        bpf_map_update_elem(&packet_size_map, &packet_id, &pinfo, BPF_ANY);
+#if 1
+        if(bpf_memcmp(redis_cmd,"",1)==0){
+//            pinfo.offset=0;
+            bpf_map_update_elem(&packet_size_map, &packet_id, &pinfo, BPF_ANY);
+            
+            //            offset = 0;
+//            bpf_map_update_elem(&packet_size_map, &value_offset, &offset, BPF_ANY);
+        }
+//        packet_id++;
+#endif
+        return -1;
+    }
+    offset = ETH_HLEN+sizeof(struct iphdr)+tcp_hdr_len+3; // set(3) \r\n(2) $3\r\n(4) key\r\n(5)
+    
+#if 0
+    __u16 src_port = bpf_ntohs(tcp_header.source);
+    __u16 dst_port = bpf_ntohs(tcp_header.dest);
+
+
+
+    bpf_printk("Destination Port: %u\n", dst_port);
+    // Print the destination port
+    bpf_printk("Source Port: %u\n", src_port);
+#endif
+
+     /* Now we need to find the next \r\n */
+//    char value_size[10];
+    int val_ptr;
+    for (int j = 0; j < 4; ++j){
+        for(int i=0; i<512; ++i){ // Assuming a maximum of 512 bytes to search
+            if(bpf_skb_load_bytes(skb,offset+i, &delimiter,sizeof(delimiter))!=0)
+              continue;
+          if(bpf_memcmp(delimiter,"\r\n",2)==0){
+              offset += i+2;
+              if (j == 2){
+                val_ptr = offset+1; //$제거 
+             }
+              break;
+            }
+        }
+    }
+    bpf_printk("22222222\n"); 
+    bpf_skb_load_bytes(skb,val_ptr, &pinfo.size,sizeof(pinfo.size));
+//    packet_size -= offset + 2; // 2(\r\n)
+    offset -= (ETH_HLEN+sizeof(struct iphdr)-2);
+    pinfo.offset = offset;
+//    bpf_printk("packet_id = %d\n",*packet_id);
+//    bpf_printk("pinfo.offset = %d\n",pinfo.offset);
+//    bpf_printk("pinfo.size = %s\n",pinfo.size);
+    bpf_map_update_elem(&packet_size_map, &packet_id, &pinfo, BPF_ANY);
+//    (*packet_id)++;
+
+
+//    if (*packet_id >= 10000) {
+//        *packet_id = 0;
+//    }   
+
+    return -1;
+
+}
+
+
+char _license[] SEC("license") = "GPL";
