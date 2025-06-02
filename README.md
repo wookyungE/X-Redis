@@ -12,6 +12,9 @@ OMA(Opportune Memory Allocator) is that moves zeroing off the critical path in D
    git clone https://github.com/wookyungE/X-Redis
 2. compile
    If you want to build the original opensource redis-4.0.0, run command:
-   make
+   
+      make
+   
    If you want to build the Pmem-Redis for DCPMM, run command:
-   make USE_NVM=yes
+   
+      make USE_NVM=yes
