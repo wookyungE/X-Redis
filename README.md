@@ -23,7 +23,7 @@ OMA(Opportune Memory Allocator) is that moves zeroing off the critical path in D
 
       `여기 dax로 마운트 하는 코드`
    
-   and then run command:
+      and then run command:
    
       `make USE_NVM=yes`
 
@@ -33,17 +33,18 @@ OMA(Opportune Memory Allocator) is that moves zeroing off the critical path in D
 
       `여기 dax로 마운트 하는 코드`
    
-   run command:
+      and thenrun command:
+   
       `make USE_NVM=yes, USE_BPF=yes`
 
-3. Dependancies
+4. Dependancies
    If you get an error when building, turn the next code and compound it again.
 
    `make distclean`
 
    You can change the options in redis.conf.
  
-4. Run
+5. Run
    You can run X-Redis by the command:
    
    `./src/redis-server redis.conf`
