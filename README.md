@@ -21,7 +21,7 @@ OMA(Opportune Memory Allocator) is that moves zeroing off the critical path in D
    
    If you want to build the Pmem-Redis for DCPMM, if you didn't mount DCPMM as DAX:
 
-      `여기 dax로 마운트 하는 코드`
+      `mkfs.ext4 -F /dev/pmem0 && mkdir -p /mnt/pmem0 && mount -o dax /dev/pmem0 /mnt/pmem0`
    
       and then run command:
    
@@ -31,7 +31,7 @@ OMA(Opportune Memory Allocator) is that moves zeroing off the critical path in D
 
    If you want to build the X-Redis, if you didn't mount DCPMM as DAX:
 
-      `여기 dax로 마운트 하는 코드`
+      `mkfs.ext4 -F /dev/pmem0 && mkdir -p /mnt/pmem0 && mount -o dax /dev/pmem0 /mnt/pmem0`
    
       and thenrun command:
    
