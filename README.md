@@ -68,21 +68,21 @@ The current `WKLEE` path uses a fixed threshold: it compares the target run's `t
 
 ## Evaluation
 
-The following figures are cropped from the published paper. They are the authors' reported results, not new measurements from this checkout. The plotted data has not been estimated or reconstructed.
+The following figures preserve the original vector graphics embedded in the published paper. SVG versions are displayed below, with extracted vector PDFs available for download. These are the authors' reported results, not new measurements from this checkout; the plotted data has not been estimated or reconstructed.
 
 ### 1. Allocation latency with and without OMA
 
-![Paper Figure 5: Allocation latency with DCPMM and Ext4-DAX, with and without OMA. The horizontal axis shows operations and the logarithmic vertical axis shows latency in microseconds.](docs/figures/oma-allocation-latency.png)
+![Paper Figure 5: Allocation latency with DCPMM and Ext4-DAX, with and without OMA. The horizontal axis shows operations and the logarithmic vertical axis shows latency in microseconds.](docs/figures/oma-allocation-latency.svg)
 
-Source: Figure 5, p. 434 of the paper. © 2025 IEEE.
+Source: Figure 5, p. 434 of the paper. © 2025 IEEE. [Vector PDF](docs/figures/oma-allocation-latency.pdf).
 
 The DCPMM + Ext4-DAX path exhibits recurring spikes when allocating new chunks. OMA reduces these spikes by preparing memory in the background. The paper reports approximately 1,700 μs during new chunk allocation and zeroing. This figure measures allocation latency, not end-to-end request p99 latency.
 
 ### 2. Throughput when adding OMA to PPF
 
-![Paper Figure 8: SET and GET throughput for values from 256 B to 128 KB, normalized to P. Comparing X-PPF with X-PPF+ shows the additional effect of OMA.](docs/figures/memtier-throughput.png)
+![Paper Figure 8: SET and GET throughput for values from 256 B to 128 KB, normalized to P. Comparing X-PPF with X-PPF+ shows the additional effect of OMA.](docs/figures/memtier-throughput.svg)
 
-Source: Figure 8, p. 437 of the paper. © 2025 IEEE.
+Source: Figure 8, p. 437 of the paper. © 2025 IEEE. [Vector PDF](docs/figures/memtier-throughput.pdf).
 
 | Label | Configuration |
 | --- | --- |
@@ -96,6 +96,32 @@ The vertical axis shows normalized IOPS, with P set to 1. Numbers above the P ba
 
 For 128 KB SET operations, the paper reports 2.28× baseline throughput, a 128% increase, with X-PPF+. This is the result of combining PPF and OMA, rather than an OMA-only result.
 
+### 3. Twitter workloads
+
+The paper evaluates five Twitter memcache traces using an extended Memtier benchmark with eight threads. The workloads mix SET and GET requests and vary both key and value sizes. Four traces were selected for their high SET ratios, and cluster043 was added to evaluate smaller writes.
+
+| Trace | Category | Key size | Average value size |
+| --- | --- | --- | --- |
+| cluster008 | Computation | 23 B | 18.2 KB |
+| cluster037 | Computation | 72 B | 16.4 KB |
+| cluster043 | Computation | 44 B | 1.9 KB |
+| cluster049 | Storage | 44 B | 25.4 KB |
+| cluster050 | Computation | 18 B | 67.8 KB |
+
+Workload characteristics are from Table II of the paper.
+
+![Paper Figure 10: Twitter workload throughput normalized to P for five traces, comparing D, P, D-DPDK, P-DPDK, X-PPF, and X-PPF+.](docs/figures/twitter-throughput.svg)
+
+Source: Figure 10, p. 439 of the paper. © 2025 IEEE. [Vector PDF](docs/figures/twitter-throughput.pdf).
+
+Across these workloads, the paper reports that X-PPF+ achieves an average 32.7% higher IOPS than P and is only 3.7% below the DRAM-only configuration D. P is on average 27.4% below D. These are reported averages for the combined PPF and OMA system. As in Figure 8, comparing X-PPF with X-PPF+ shows the additional effect of OMA.
+
+![Paper Figure 11: Value-size distributions for the five Twitter traces, with frequency plotted against data size in KB.](docs/figures/twitter-value-distribution.svg)
+
+Source: Figure 11, p. 439 of the paper. © 2025 IEEE. [Vector PDF](docs/figures/twitter-value-distribution.pdf).
+
+The distributions provide context for the throughput differences. The paper attributes X-redis's slight advantage over D on cluster049 to the workload's high variation in value sizes and its interaction with Redis's query-buffer sizing heuristic. The trace-based evaluation complements the fixed-value-size Memtier experiments.
+
 ### Experimental setup reported in the paper
 
 | Component | Configuration |
@@ -105,7 +131,8 @@ For 128 KB SET operations, the paper reports 2.28× baseline throughput, a 128% 
 | File system | Ext4-DAX |
 | Network | 56 Gb Ethernet between client and server |
 | Figure 8 workload | Memtier, one million SET and GET operations each, eight threads |
-| Value sizes | 256 B–128 KB |
+| Figure 8 value sizes | 256 B–128 KB |
+| Twitter workload | Five memcache traces, mixed SET/GET, eight threads |
 | Repetitions | Average of five runs |
 
 See the [figure notes](docs/figures/README.md) for attribution and extraction details.
