@@ -72,7 +72,7 @@ The following figures preserve the original vector graphics embedded in the publ
 
 ### 1. Allocation latency with and without OMA
 
-![Paper Figure 5: Allocation latency with DCPMM and Ext4-DAX, with and without OMA. The horizontal axis shows operations and the logarithmic vertical axis shows latency in microseconds.](docs/figures/oma-allocation-latency.svg)
+<a href="docs/figures/oma-allocation-latency.svg"><img src="docs/figures/oma-allocation-latency.svg" alt="Paper Figure 5: Allocation latency with DCPMM and Ext4-DAX, with and without OMA. The horizontal axis shows operations and the logarithmic vertical axis shows latency in microseconds." width="100%"></a>
 
 Source: Figure 5, p. 434 of the paper. © 2025 IEEE. [Vector PDF](docs/figures/oma-allocation-latency.pdf).
 
@@ -80,7 +80,7 @@ The DCPMM + Ext4-DAX path exhibits recurring spikes when allocating new chunks. 
 
 ### 2. Throughput when adding OMA to PPF
 
-![Paper Figure 8: SET and GET throughput for values from 256 B to 128 KB, normalized to P. Comparing X-PPF with X-PPF+ shows the additional effect of OMA.](docs/figures/memtier-throughput.svg)
+<a href="docs/figures/memtier-throughput.svg"><img src="docs/figures/memtier-throughput.svg" alt="Paper Figure 8: SET and GET throughput for values from 256 B to 128 KB, normalized to P. Comparing X-PPF with X-PPF+ shows the additional effect of OMA." width="100%"></a>
 
 Source: Figure 8, p. 437 of the paper. © 2025 IEEE. [Vector PDF](docs/figures/memtier-throughput.pdf).
 
@@ -110,13 +110,13 @@ The paper evaluates five Twitter memcache traces using an extended Memtier bench
 
 Workload characteristics are from Table II of the paper.
 
-![Paper Figure 10: Twitter workload throughput normalized to P for five traces, comparing D, P, D-DPDK, P-DPDK, X-PPF, and X-PPF+.](docs/figures/twitter-throughput.svg)
+<a href="docs/figures/twitter-throughput.svg"><img src="docs/figures/twitter-throughput.svg" alt="Paper Figure 10: Twitter workload throughput normalized to P for five traces, comparing D, P, D-DPDK, P-DPDK, X-PPF, and X-PPF+." width="100%"></a>
 
 Source: Figure 10, p. 439 of the paper. © 2025 IEEE. [Vector PDF](docs/figures/twitter-throughput.pdf).
 
 Across these workloads, the paper reports that X-PPF+ achieves an average 32.7% higher IOPS than P and is only 3.7% below the DRAM-only configuration D. P is on average 27.4% below D. These are reported averages for the combined PPF and OMA system. As in Figure 8, comparing X-PPF with X-PPF+ shows the additional effect of OMA.
 
-![Paper Figure 11: Value-size distributions for the five Twitter traces, with frequency plotted against data size in KB.](docs/figures/twitter-value-distribution.svg)
+<a href="docs/figures/twitter-value-distribution.svg"><img src="docs/figures/twitter-value-distribution.svg" alt="Paper Figure 11: Value-size distributions for the five Twitter traces, with frequency plotted against data size in KB." width="100%"></a>
 
 Source: Figure 11, p. 439 of the paper. © 2025 IEEE. [Vector PDF](docs/figures/twitter-value-distribution.pdf).
 
