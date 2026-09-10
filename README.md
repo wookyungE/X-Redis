@@ -28,7 +28,7 @@ Redis with DRAM and Intel Optane DCPMM places indexes and small values in DRAM a
 | Bottleneck | Approach | Technique |
 | --- | --- | --- |
 | Intermediate buffer copies and repeated kernel/user crossings during network receive | Inspect packet metadata with eBPF to support placement in the destination memory tier | PPF |
-| Page zeroing and latency spikes when allocating new memory through Ext4-DAX | Allocate and initialize memory in the background before it is needed | OMA — Wookyung Lee's contribution |
+| Page zeroing and latency spikes when allocating new memory through Ext4-DAX | Allocate and initialize memory in the background before it is needed | OMA — my contribution |
 
 ## OMA design
 
