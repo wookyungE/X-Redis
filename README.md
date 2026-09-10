@@ -137,6 +137,35 @@ The distributions provide context for the throughput differences. The paper attr
 
 See the [figure notes](docs/figures/README.md) for attribution and extraction details.
 
+## Repository layout
+
+| Directory | Purpose | Start here |
+| --- | --- | --- |
+| `src/` | Redis server, request handling, data structures, and PMEM/BPF integration | [Source guide](src/README.md) |
+| `BasicBPF/` | PPF packet inspection program and standalone development utilities | [BPF guide](BasicBPF/README.md) |
+| `deps/` | Bundled libraries and dependency build scripts | [Dependency guide](deps/README.md) |
+| `deps/memkind/jemalloc/` | Bundled allocator containing the OMA background allocation path | [OMA implementation guide](deps/memkind/OMA.md) |
+| `tests/` | Redis unit, integration, cluster, and Sentinel tests, plus additional test scripts | [Test guide](tests/README.md) |
+| `utils/` | Redis development, administration, and diagnostic utilities | [Utility guide](utils/README.md) |
+| `docs/figures/` | Published evaluation figures in SVG and vector PDF formats | [Figure sources](docs/figures/README.md) |
+| `docs/scripts/` | Reproducible extraction of vector figures from the paper | [Extraction script](docs/scripts/extract_figures.py) |
+| `temp/` | Standalone map implementation and its small test program | [map.c](temp/map.c), [test.c](temp/test.c) |
+
+To review OMA, start with its [implementation guide](deps/memkind/OMA.md), then follow the allocator functions it links. To review PPF, read the [BPF guide](BasicBPF/README.md) alongside the Redis [source guide](src/README.md).
+
+### Root files and scripts
+
+| File | Purpose |
+| --- | --- |
+| [Makefile](Makefile) | Top-level entry point for the Redis build |
+| [redis.conf](redis.conf), [redis.conf2](redis.conf2) | Runtime configurations, including PMEM paths and capacity |
+| [1_Make.sh](1_Make.sh) | Build the BPF object, copy it to the root, and build Redis with NVM/BPF enabled |
+| [2_Run.sh](2_Run.sh) | Delete a specific PMEM backing file and start Redis |
+| [3_distclean.sh](3_distclean.sh) | Delete matching PMEM backing files, clean the build, and rebuild |
+| [break.py](break.py), [cal.sh](cal.sh) | Experimental log-processing and timing-analysis scripts with fixed input assumptions |
+
+The run and cleanup scripts contain deletion commands and environment-specific paths. See [Build and run](#build-and-run) for the direct server command and prerequisites. Checked-in binaries, object files, and backup variants are historical development artifacts; use source files and the documented build path when reviewing the implementation.
+
 ## Code guide
 
 | Path | Role |

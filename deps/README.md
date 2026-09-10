@@ -1,11 +1,33 @@
+# Dependencies in X-redis
+
+This directory contains bundled libraries and their build scripts. Most code originates in the upstream projects; the OMA work is in memkind's bundled jemalloc.
+
+| Path | Role |
+| --- | --- |
+| [memkind/](memkind/) | Memory-kind abstraction and file-backed PMEM allocation |
+| [memkind/jemalloc/](memkind/jemalloc/) | Allocator linked by the NVM build, including OMA changes |
+| [jemalloc/](jemalloc/) | Separate jemalloc copy used by the ordinary Redis allocator configuration |
+| [pmdk/](pmdk/) | Persistent memory libraries |
+| [hiredis/](hiredis/) | Redis C client library used by client-side tools |
+| [linenoise/](linenoise/) | Command-line editing support |
+| [lua/](lua/) | Embedded Lua scripting runtime |
+| [build-memkind.sh](build-memkind.sh) | Builds memkind and its bundled jemalloc |
+| [Makefile](Makefile) | Dependency build and cleanup targets |
+
+For the personal OMA contribution, start with the [OMA implementation guide](memkind/OMA.md). The NVM library selection is defined in [src/Makefile](../src/Makefile). The tree also includes `aofguard/`, `jemallocat/`, and `pmdk_bak/`; these are outside the OMA reading path described here.
+
+The historical Redis dependency notes below refer to their original upstream context. In particular, the statement that jemalloc is unmodified does not describe the OMA changes in `memkind/jemalloc/`. Preserve those changes when updating dependencies.
+
+## Historical Redis dependency notes
+
 This directory contains all Redis dependencies, except for the libc that
 should be provided by the operating system.
 
-* **Jemalloc** is our memory allocator, used as replacement for libc malloc on Linux by default. It has good performances and excellent fragmentation behavior. This component is upgraded from time to time.
-* **geohash-int** is inside the dependencies directory but is actually part of the Redis project, since it is our private fork (heavily modified) of a library initially developed for Ardb, which is in turn a fork of Redis.
-* **hiredis** is the official C client library for Redis. It is used by redis-cli, redis-benchmark and Redis Sentinel. It is part of the Redis official ecosystem but is developed externally from the Redis repository, so we just upgrade it as needed.
-* **linenoise** is a readline replacement. It is developed by the same authors of Redis but is managed as a separated project and updated as needed.
-* **lua** is Lua 5.1 with minor changes for security and additional libraries.
+* Jemalloc is our memory allocator, used as replacement for libc malloc on Linux by default. It has good performances and excellent fragmentation behavior. This component is upgraded from time to time.
+* geohash-int is inside the dependencies directory but is actually part of the Redis project, since it is our private fork (heavily modified) of a library initially developed for Ardb, which is in turn a fork of Redis.
+* hiredis is the official C client library for Redis. It is used by redis-cli, redis-benchmark and Redis Sentinel. It is part of the Redis official ecosystem but is developed externally from the Redis repository, so we just upgrade it as needed.
+* linenoise is a readline replacement. It is developed by the same authors of Redis but is managed as a separated project and updated as needed.
+* lua is Lua 5.1 with minor changes for security and additional libraries.
 
 How to upgrade the above dependencies
 ===
